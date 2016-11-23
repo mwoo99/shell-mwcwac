@@ -37,7 +37,7 @@ int run(){
   char input[45];
   char* cmds[10];
 
-  printf(">");
+  printf("TacoBigMACshell$ ");
   fgets(input,sizeof(input),stdin);
   while(strncmp(input,"EXIT\n",sizeof(input)) != 0){
     char* r = strstr(input,"\n");
@@ -54,7 +54,7 @@ int run(){
     if(exe(cmds)){
       return -1;
     }
-    printf(">");
+    printf("TacoBigMACshell$ ");
     fgets(input,sizeof(input),stdin);
   }
   
@@ -62,13 +62,19 @@ int run(){
 }
 
 int exe(char * cmd[]){
-  int i = fork();
-  if (!i){
-    //printf("My PID: %d\n", getpid());
-    //printf("PPID: %d\n", getppid());
-    execvp(cmd[0],cmd);
-    kill(getpid(),9);
-  }
+  if (cmd[0] == "cd"){
+    chdir(cmd[1]);
+    }
+  
+  else{    
+    int i = fork();
+    if (!i){
+      //printf("My PID: %d\n", getpid());
+      //printf("PPID: %d\n", getppid());
+      execvp(cmd[0],cmd);
+      kill(getpid(),9);
+    }    
   wait();
+  }  
   return 0;
 }
