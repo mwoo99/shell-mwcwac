@@ -6,7 +6,7 @@
 #include "proj.h"
 
 void main(){
-  printf("Entering the big MAC\nType EXIT to leave\n\n");
+  printf("\nEntering the big MAC\nType EXIT to leave\n\n");
   int x = run();
   
   if (x){
@@ -20,12 +20,19 @@ void error(){
   printf("Something went wrong!\n%s\n",strerror(errno));
 }
 
-void parse(char in[], char* cmd[]){  
+void parse(char in[], char* cmd[]){//processes in and adjusts cmd 
   char *p = in;
   char *s;
-  int x = 0;;
+  int x = 0;
+
+  while(in[(strlen(in) - 1)] == ' '){//removes whitespace behind semicolon
+    in[(strlen(in) - 1)] = 0;
+  }
+  while(*p == ' '){//removes whitespace in front of semicolon
+    p++;
+  }
   
-  while(p){
+  while(p){//most of the changing done to cmd
     s = strsep(&p," ");
     cmd[x] = s;
     x++;
@@ -35,26 +42,32 @@ void parse(char in[], char* cmd[]){
 
 int run(){
   char input[45];
-  char* cmds[10];
+  char* cmds[20];
+  char cwd[256];
+  
+  char* semiP;
+  char* procP;
 
-  printf("TacoBigMACshell$ ");
+  getcwd(cwd,sizeof(cwd));
+  printf("TacoBigMACshell:%s$", cwd);
+  
   fgets(input,sizeof(input),stdin);
   while(strncmp(input,"EXIT\n",sizeof(input)) != 0){
     char* r = strstr(input,"\n");
     *r = 0;
-    
-    parse(input,cmds);
 
-    /*int t = 0;
-    while (cmds[t]){
-      printf("%d: %s\n",t, cmds[t]);
-      t++;
-      }*/
-    
-    if(exe(cmds)){
-      return -1;
+    semiP = input;
+    while(semiP){
+      procP = strsep(&semiP,";");
+      parse(procP,cmds);
+      if(exe(cmds)){
+	return -1;
+      }
     }
-    printf("TacoBigMACshell$ ");
+    
+    getcwd(cwd,sizeof(cwd));
+    printf("TacoBigMACshell:%s$", cwd);
+    
     fgets(input,sizeof(input),stdin);
   }
   
@@ -62,9 +75,18 @@ int run(){
 }
 
 int exe(char * cmd[]){
-  if (cmd[0] == "cd"){
+  int red = checkRed(cmd);
+  char* mark = cmd[0];
+  
+  if (strcmp(cmd[0], "cd") == 0){
     chdir(cmd[1]);
     }
+
+  /*if (red){
+    int c = 0;
+    while(c){
+    }
+    }*/ //WIP for Redirections
   
   else{    
     int i = fork();
@@ -76,5 +98,23 @@ int exe(char * cmd[]){
     }    
   wait();
   }  
+  return 0;
+}
+
+int checkRed(char* cmd[]){//WIP for Redirections
+  int c = 0;
+  while(cmd[c] != 0){
+    if(strcmp(cmd[c],"<")){
+      return 1;}
+    
+    if(strcmp(cmd[c],">")){
+      return 2;}
+    
+    if(strcmp(cmd[c],"|")){
+      return 3;}
+      
+    c++;
+  }
+  
   return 0;
 }

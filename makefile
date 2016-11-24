@@ -5,4 +5,4 @@ run: shelly
 	./shelly
 
 clean:
-	rm *~
+	rm *~ shelly
