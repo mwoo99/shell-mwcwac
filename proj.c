@@ -75,18 +75,42 @@ int run(){
 }
 
 int exe(char * cmd[]){
-  int red = checkRed(cmd);
+  int red = finRed(cmd);
   char* mark = cmd[0];
-  
-  if (strcmp(cmd[0], "cd") == 0){
-    chdir(cmd[1]);
+
+  if (red){
+    char *re = cmd[red];
+    int f;
+    
+    if (!strcmp(re,"<")){
+      f = fork();
+      if (!f){
+	printf("You tried <,IT FAILED\n");
+      }
+    }
+    
+    else if(!strcmp(re,">")){
+      f = fork();
+      if(!f){
+	printf("You tried >, IT FAILED\n");
+	
+      }
     }
 
-  /*if (red){
-    int c = 0;
-    while(c){
+    else{
+      f = fork();
+      if(!f){
+	printf("You tried piping, IT FAILED!\n");
+      }
+    }    
+    if(!f){kill(getpid(),9);}
+    wait();
+    } //WIP for Redirections
+  
+  else if (!strcmp(cmd[0], "cd")){
+    chdir(cmd[1]);
     }
-    }*/ //WIP for Redirections
+  
   
   else{    
     int i = fork();
@@ -101,18 +125,12 @@ int exe(char * cmd[]){
   return 0;
 }
 
-int checkRed(char* cmd[]){//WIP for Redirections
+int finRed(char* cmd[]){//WIP for Redirections
   int c = 0;
-  while(cmd[c] != 0){
-    if(strcmp(cmd[c],"<")){
-      return 1;}
-    
-    if(strcmp(cmd[c],">")){
-      return 2;}
-    
-    if(strcmp(cmd[c],"|")){
-      return 3;}
-      
+  while(cmd[c]){
+    if(!strcmp(cmd[c],"<") || !strcmp(cmd[c],">") || !strcmp(cmd[c],"|")){
+      return c;
+    }      
     c++;
   }
   
