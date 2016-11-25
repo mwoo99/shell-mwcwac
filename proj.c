@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include <fcntl.h>
 #include "proj.h"
 
 void main(){
@@ -81,26 +82,51 @@ int exe(char * cmd[]){
   if (red){
     char *re = cmd[red];
     int f;
+    int nf;
+    int cf;
     
     if (!strcmp(re,"<")){
       f = fork();
-      if (!f){
-	printf("You tried <,IT FAILED\n");
+      
+	if(!f){ 
+	 re = cmd[(red + 1)];
+	 nf = open(re, O_RDONLY);
+	 
+	 cf = dup(0);
+	 dup2(nf,0);
+	 
+	 cmd[red] = 0;
+	 
+	 execvp(cmd[0],cmd);
+
+	 dup2(cf,0);
+      close(nf);	
       }
     }
     
     else if(!strcmp(re,">")){
       f = fork();
-      if(!f){
-	printf("You tried >, IT FAILED\n");
-	
+	 
+	if(!f){ 
+	 re = cmd[(red + 1)];
+	 nf = open(re, O_CREAT | O_WRONLY, 00755);
+	 
+	 cf = dup(1);
+	 dup2(nf,1);
+	 
+	 cmd[red] = 0;
+	 
+	 execvp(cmd[0],cmd);
+
+	 dup2(cf,1);
+      close(nf);	
       }
     }
 
     else{
       f = fork();
       if(!f){
-	printf("You tried piping, IT FAILED!\n");
+	 printf("piping not yet added. :c\n");
       }
     }    
     if(!f){kill(getpid(),9);}
