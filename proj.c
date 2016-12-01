@@ -80,30 +80,7 @@ int exe(char * cmd[]){
   char* mark = cmd[0];
    	
   if(finPipe(cmd)){
-    char * c1[2];
-    char * c2[2];
-    char * s;
-    int file = open("nopipe", O_CREAT | O_RDWR | O_TRUNC, 0644);
-    s = cmd[0];
-    c1[0] = s;
-    s = cmd[2];
-    c2[0] = s;
-    c1[1] = 0;
-    c2[1] = 0;
-    int f = fork();
-    if(!f){
-	int f2 = fork();
-	if(!f2){ 
-		dup2(file,1);
-	 	execvp(c1[0],c1);
-	}
-	else{
-		wait();
-		lseek(file,0,SEEK_SET);
-		dup2(file,0);
-		execvp(c2[0],c2);
-	}
-    }
+    
   }
 
   if (red){
@@ -125,7 +102,6 @@ int exe(char * cmd[]){
 	 cmd[red] = 0;
 	 
 	 execvp(cmd[0],cmd);
-
 	 dup2(cf,0);
       close(nf);	
       }
@@ -144,13 +120,43 @@ int exe(char * cmd[]){
 	 cmd[red] = 0;
 	 
 	 execvp(cmd[0],cmd);
-	 // THIS DOESN"T APPEAR SINCE EXECVP EXITS
-	 dup2(cf,1);
-      close(nf);	
+	 // THIS DOESN"T APPEAR SINCE EXECVP EXITS	
       }
     }
+
+    else{
+      char * c1[2];
+      char * c2[2];
+      char * s;
+      int file = open(".nopipe", O_CREAT | O_RDWR | O_TRUNC, 0644);
+
+      s = cmd[0];
+      c1[0] = s;
+      s = cmd[2];
+      c2[0] = s;
+      c1[1] = 0;
+      c2[1] = 0;
+      
+      int f = fork();
+      if(!f){
+	int f2 = fork();
+	if(!f2){
+	  dup2(file,1);
+	  execvp(c1[0],c1);
+	}
+	else{
+	  wait();
+	  lseek(file,0,SEEK_SET);
+	  dup2(file,0);
+	  execvp(c2[0],c2);
+	}
+      }
+      wait();
+      int f3 = fork();
+      if(!f3) execlp("rm","rm",".nopipe",NULL); 
+    }
     
-    if(!f){kill(getpid(),9);}
+    if(!f) kill(getpid(),9);
     wait();
     } //WIP for Redirections
   
