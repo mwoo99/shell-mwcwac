@@ -2,12 +2,14 @@ Big Mac
 by Conan Wong, Anthony Chen, Michael Woo
 
 Features:
+
 	Forks and executes
 	Simple redirection and piping
 	Multiple commands on one line
 	Makes Doritos Locos Tacos
 
 Unsuccessfully implemented features:
+
 	Couldn't replace the beginning of the current working directory with ~.
 	(/home/students/2017/<NAME>/...  replaced with ~/...)
 	Was unable to do infinite piping /did not have the time.
