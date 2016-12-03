@@ -5,13 +5,18 @@ Features:
 	Forks and executes
 	Simple redirection and piping
 	Multiple commands on one line
+	Makes Doritos Locos Tacos
 
 Unsuccessfully implemented features:
 	Couldn't replace the beginning of the current working directory with ~.
 	(/home/students/2017/<NAME>/...  replaced with ~/...)
+	Was unable to do infinite piping /did not have the time.
+	Autocomplete, since it requires a library outside of our knowledge.
 
 Bugs:
-	
+	When you repeatedly run an unknown command, e.g. (moo), you will be forced
+	to exit the program.
+	Tacos will be cold.
 
 Functions:
 void main()
@@ -30,7 +35,7 @@ void parse(char in[], char* cmd[])
      inputs: char in[], char* cmd[]
      returns: --
      
-     Processes input and separates it by spaces
+     Processes input and separates it by spaces.
 
 int run()
     inputs: --
@@ -46,8 +51,9 @@ int exe(char * cmd[])
 
 int finRed(char* cmd[])
     inputs: char* cmd[]
-    return: int
+    returns: int
     
-    Returns the occurrence of redirection or piping
+    Returns the occurrence of redirection or piping (return value > 0)
+    If neither redirection nor piping is found, then 0 is returned.
     
     		 
