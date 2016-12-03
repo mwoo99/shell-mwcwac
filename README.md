@@ -27,12 +27,6 @@ void main()
      returns: --
 
      Prints the enter message and runs the shell
-     
-void error()
-     inputs: --
-     returns: --
-     
-     Prints an error message
 
 void parse(char in[], char* cmd[])
      inputs: char in[], char* cmd[]
