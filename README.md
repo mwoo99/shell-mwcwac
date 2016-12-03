@@ -16,6 +16,7 @@ Unsuccessfully implemented features:
 	Autocomplete, since it requires a library outside of our knowledge.
 
 Bugs:
+
 	When you repeatedly run an unknown command, e.g. (moo), you will be forced
 	to exit the program.
 	Tacos will be cold.
