@@ -47,7 +47,9 @@ int exe(char * cmd[])
     inputs: char * cmd[]
     returns: int
    
-    Checks and handles for redirection and piping. If there is redirection, for  and correspondly redirect. If there is piping, fork and use the output of one command as the input of another. Else just run() just executes the command and kills the process afterwards. 
+    Checks and handles for redirection and piping. If there is redirection, for  and correspondly redirect.
+    If there is piping, fork and use the output of one command as the input of another. 
+    Else just run() just executes the command and kills the process afterwards. 
 
 int finRed(char* cmd[])
     inputs: char* cmd[]
